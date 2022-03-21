@@ -1,4 +1,5 @@
 ﻿using AppTm.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,21 +9,52 @@ namespace AppTm.Repositories
 {
     public class ArtistRepository : IRepository<Artist>
     {
-        private readonly Context context;
+        private readonly Context _context;
 
         public ArtistRepository(Context context)
         {
-            this.context = context;
+            _context = context;
         }
 
-        public Artist Get(int id)
+        public Artist GetById(int id)
         {
-            return context.Set<Artist>().Find(id);
+            return _context.Set<Artist>().Find(id);
+        }
+
+        public Artist GetByName(string name)
+        {
+            return _context.Set<Artist>().Where(a => a.Name == name).FirstOrDefault();
         }
 
         public List<Artist> GetAll()
         {
-            return context.Set<Artist>().ToList();
+            return _context.Set<Artist>().ToList();
+        }
+
+        public void Update(Artist artist)
+        {
+            _context.Set<Artist>().Update(artist);
+            _context.Entry(artist).State = EntityState.Modified;
+        }
+        public void Add(Artist artist)
+        {
+            _context.Add(artist);
+        }
+
+        public void AddRange(IEnumerable<Artist> artists)
+        {
+            _context.AddRange(artists);
+        }
+
+        public void SaveChanges()
+        {
+            _context.SaveChanges();
+        }
+
+        public void Delete(int id)
+        {
+            Artist artist = GetById(id);
+            _context.Artists.Remove(artist);
         }
     }
 }

@@ -8,7 +8,13 @@ namespace AppTm.Repositories
 {
     public interface IRepository<T>
     {
-        T Get(int id);
-        List<T> GetAll();
+        public T GetById(int id);
+        public T GetByName(string name);
+        public List<T> GetAll();
+        public void Update(T entity);
+        public void Add(T entity);
+        public void Delete(int id);
+        public void AddRange(IEnumerable<T> entity);
+        public void SaveChanges();
     }
 }

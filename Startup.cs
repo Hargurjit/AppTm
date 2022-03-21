@@ -14,6 +14,7 @@ using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using AppTm.Repositories;
 using AppTm.Entities;
+using AppTm.Services;
 
 namespace AppTm
 {
@@ -29,17 +30,20 @@ namespace AppTm
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<Context>(o =>
+       o.UseSqlite(Configuration.GetConnectionString("DefaultConnection")).EnableSensitiveDataLogging());
+
+            services.AddScoped<IRepository<Artist>, ArtistRepository>();
+            services.AddScoped<IRepository<Song>, SongRepository>();
+
+            services.AddScoped<IArtistService, ArtistService>();
+            services.AddScoped<ISongService, SongService>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AppTm", Version = "v1" });
             });
-            services.AddDbContext<Context>(o =>
-                o.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
-
-            services.AddScoped<IRepository<Artist>, ArtistRepository>();
-
         }
         
 
